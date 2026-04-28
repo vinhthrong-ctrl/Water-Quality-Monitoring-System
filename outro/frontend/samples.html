@@ -1,120 +1,233 @@
-const API_URL = "http://127.0.0.1:8000/samples";
-const tableBody = document.getElementById("samplesTable");
+<!DOCTYPE html>
 
-function safe(value, digits = null) {
-    if (value === null || value === undefined) return "-";
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Water Samples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    const num = Number(value);
-    if (isNaN(num)) return "-";
+```
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-    return digits !== null ? num.toFixed(digits) : num;
-}
+<style>
+    body {
+        background: #020617;
+    }
 
-async function fetchSamples() {
-    try {
-        const response = await fetch(API_URL);
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-in-out;
+    }
 
-        if (!response.ok) {
-            throw new Error("Could not connect to backend server.");
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+```
+
+</head>
+<body class="text-slate-200">
+
+```
+<!-- Header -->
+<div class="p-6 border-b border-slate-800">
+    <h1 class="text-2xl font-bold text-cyan-400">
+        Water Quality Samples
+    </h1>
+    <p class="text-sm text-slate-400 mt-1">
+        Click any row to view cleaning & improvement suggestions
+    </p>
+</div>
+
+<!-- Table -->
+<div class="p-6 overflow-x-auto">
+    <table class="w-full text-sm border border-slate-800 rounded-xl overflow-hidden">
+        
+        <thead class="bg-slate-900 text-slate-400 text-xs uppercase">
+            <tr>
+                <th class="px-4 py-3">pH</th>
+                <th class="px-4 py-3">Hardness</th>
+                <th class="px-4 py-3">Solids</th>
+                <th class="px-4 py-3">Organic Carbon</th>
+                <th class="px-4 py-3">Chloramines</th>
+                <th class="px-4 py-3">Sulfate</th>
+                <th class="px-4 py-3">Conductivity</th>
+                <th class="px-4 py-3">Trihalomethanes</th>
+                <th class="px-4 py-3">Turbidity</th>
+                <th class="px-4 py-3">Potability</th>
+                <th class="px-4 py-3">Prediction</th>
+                <th class="px-4 py-3">Confidence</th>
+            </tr>
+        </thead>
+
+        <tbody id="samplesTable">
+            <tr>
+                <td colspan="12" class="text-center py-10 text-slate-500">
+                    Loading data...
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<!-- JS -->
+<script>
+    const API_URL = "http://127.0.0.1:8000/samples";
+    const tableBody = document.getElementById("samplesTable");
+
+    function safe(value, digits = null) {
+        if (value === null || value === undefined) return "-";
+        const num = Number(value);
+        if (isNaN(num)) return "-";
+        return digits !== null ? num.toFixed(digits) : num;
+    }
+
+    async function fetchSamples() {
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error("Could not connect to backend server.");
+            }
+
+            const data = await response.json();
+            renderTable(data);
+
+        } catch (err) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="12" class="px-4 py-10 text-center text-rose-400 font-medium">
+                        ⚠️ ${err.message}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function getSuggestions(sample, prediction) {
+        const cleaning = [];
+        const developing = [];
+
+        if (prediction === "Unsafe") {
+
+            if (sample.ph < 6.5 || sample.ph > 8.5) {
+                cleaning.push("Adjust pH using neutralization filters.");
+            }
+
+            if (sample.hardness > 200) {
+                cleaning.push("Use water softeners.");
+            }
+
+            if (sample.solids > 500) {
+                cleaning.push("Apply reverse osmosis (RO).");
+            }
+
+            if (sample.turbidity > 5) {
+                cleaning.push("Use sediment filtration.");
+            }
+
+            developing.push("Install advanced filtration system.");
+            developing.push("Use real-time monitoring sensors.");
+
+        } else {
+            cleaning.push("Maintain regular cleaning.");
+            developing.push("Continue monitoring.");
         }
 
-        const data = await response.json();
-        renderTable(data);
-
-    } catch (err) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="12" class="px-4 py-10 text-center text-rose-400 font-medium">
-                    ⚠️ ${err.message}
-                </td>
-            </tr>
-        `;
-    }
-}
-
-function renderTable(samples) {
-    if (!Array.isArray(samples) || samples.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="12" class="px-4 py-10 text-center text-slate-500">
-                    No water samples available.
-                </td>
-            </tr>
-        `;
-        return;
+        return { cleaning, developing };
     }
 
-    tableBody.innerHTML = "";
+    function renderTable(samples) {
+        if (!Array.isArray(samples) || samples.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="12" class="text-center py-10 text-slate-500">
+                        No water samples available.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
-    samples.forEach((sample, index) => {
+        tableBody.innerHTML = "";
 
-        const prediction =
-            sample.prediction ??
-            (sample.potability === 1 ? "Safe" : "Unsafe");
+        samples.forEach((sample, index) => {
 
-        const predColor =
-            prediction === "Safe"
-                ? "text-emerald-400"
-                : "text-rose-400";
+            const prediction =
+                sample.prediction ??
+                (sample.potability === 1 ? "Safe" : "Unsafe");
 
-        const prob = safe(sample.probability, 2);
+            const predColor =
+                prediction === "Safe"
+                    ? "text-emerald-400"
+                    : "text-rose-400";
 
-        const row = document.createElement("tr");
-        row.className =
-            "hover:bg-slate-800/80 cursor-pointer even:bg-slate-800/30 border-b border-slate-800 transition";
+            const prob = safe(sample.probability, 2);
 
-        row.onclick = () => toggleSuggestions(index);
+            const row = document.createElement("tr");
+            row.className =
+                "hover:bg-slate-800/80 cursor-pointer even:bg-slate-800/30 border-b border-slate-800 transition";
 
-        row.innerHTML = `
-            <td class="px-4 py-4 font-mono">${safe(sample.ph, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.hardness, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.solids, 1)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.organic_carbon, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.chloramines, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.sulfate, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.conductivity, 1)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.trihalomethanes, 2)}</td>
-            <td class="px-4 py-4 font-mono">${safe(sample.turbidity, 2)}</td>
-            <td class="px-4 py-4 text-center font-bold">${safe(sample.potability)}</td>
-            <td class="px-4 py-4 text-center font-bold ${predColor}">${prediction}</td>
-            <td class="px-4 py-4 text-center opacity-70">${prob}</td>
-        `;
+            row.onclick = () => toggleSuggestions(index);
 
-        // ✅ Generate suggestions dynamically (IMPORTANT FIX)
-        const suggestions = getSuggestions(sample, prediction);
+            row.innerHTML = `
+                <td class="px-4 py-4 font-mono">${safe(sample.ph, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.hardness, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.solids, 1)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.organic_carbon, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.chloramines, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.sulfate, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.conductivity, 1)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.trihalomethanes, 2)}</td>
+                <td class="px-4 py-4 font-mono">${safe(sample.turbidity, 2)}</td>
+                <td class="px-4 py-4 text-center font-bold">${safe(sample.potability)}</td>
+                <td class="px-4 py-4 text-center font-bold ${predColor}">${prediction}</td>
+                <td class="px-4 py-4 text-center opacity-70">${prob}</td>
+            `;
 
-        const suggestionRow = document.createElement("tr");
-        suggestionRow.id = `suggestions-${index}`;
-        suggestionRow.className = "hidden bg-slate-950/40 border-b border-slate-800";
+            const suggestions = getSuggestions(sample, prediction);
 
-        suggestionRow.innerHTML = `
-            <td colspan="12" class="px-8 py-6">
-                <div class="grid md:grid-cols-2 gap-10">
-                    
-                    <div>
-                        <h4 class="text-cyan-400 text-xs mb-3">Cleaning</h4>
-                        <ul class="text-xs space-y-2">
-                            ${suggestions.cleaning.map(s => `<li>• ${s}</li>`).join("")}
-                        </ul>
+            const suggestionRow = document.createElement("tr");
+            suggestionRow.id = `suggestions-${index}`;
+            suggestionRow.className = "hidden bg-slate-950/40 animate-fadeIn";
+
+            suggestionRow.innerHTML = `
+                <td colspan="12" class="px-8 py-6">
+                    <div class="grid md:grid-cols-2 gap-10">
+                        
+                        <div>
+                            <h4 class="text-cyan-400 text-xs mb-3">Cleaning</h4>
+                            <ul class="text-xs space-y-2">
+                                ${suggestions.cleaning.map(s => `<li>• ${s}</li>`).join("")}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="text-emerald-400 text-xs mb-3">Development</h4>
+                            <ul class="text-xs space-y-2">
+                                ${suggestions.developing.map(s => `<li>• ${s}</li>`).join("")}
+                            </ul>
+                        </div>
+
                     </div>
+                </td>
+            `;
 
-                    <div>
-                        <h4 class="text-emerald-400 text-xs mb-3">Development</h4>
-                        <ul class="text-xs space-y-2">
-                            ${suggestions.developing.map(s => `<li>• ${s}</li>`).join("")}
-                        </ul>
-                    </div>
+            tableBody.appendChild(row);
+            tableBody.appendChild(suggestionRow);
+        });
+    }
 
-                </div>
-            </td>
-        `;
+    function toggleSuggestions(index) {
+        const el = document.getElementById(`suggestions-${index}`);
+        if (el) el.classList.toggle("hidden");
+    }
 
-        tableBody.appendChild(row);
-        tableBody.appendChild(suggestionRow);
-    });
-}
+    fetchSamples();
+</script>
+```
 
-function toggleSuggestions(index) {
-    const el = document.getElementById(`suggestions-${index}`);
-    if (el) el.classList.toggle("hidden");
-}
+</body>
+</html>
