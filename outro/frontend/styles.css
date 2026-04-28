@@ -1,0 +1,135 @@
+/* BASE */
+body {
+  background:
+    radial-gradient(circle at top, rgba(0, 255, 255, 0.12), transparent 25%),
+    radial-gradient(circle at right, rgba(56, 189, 248, 0.08), transparent 18%),
+    #020617;
+
+  color: #e5f6ff;
+  font-family: Inter, system-ui, sans-serif;
+
+  transition: background 0.3s ease;
+}
+
+
+/* GLASS CARD */
+.glass-card {
+  backdrop-filter: blur(18px);
+  background: rgba(10, 18, 34, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+
+/* BUTTON */
+.glow-button {
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 0 18px rgba(14, 211, 236, 0.25),
+    0 0 40px rgba(14, 211, 236, 0.12);
+}
+
+.glow-button:hover {
+  transform: translateY(-2px) scale(1.02);
+
+  box-shadow:
+    0 0 26px rgba(14, 211, 236, 0.4),
+    0 0 60px rgba(14, 211, 236, 0.2);
+}
+
+
+/* NAV */
+.nav-link {
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #38bdf8;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+}
+
+
+/* INPUT FIELD (NEW 🔥) */
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 1rem;
+
+  background: rgba(2, 6, 23, 0.8);
+  border: 1px solid #334155;
+
+  color: white;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}
+
+
+/* CARD SMALL */
+.card {
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+
+  background: rgba(2, 6, 23, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+
+/* BADGE */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 14px;
+  border-radius: 999px;
+
+  background: rgba(56, 189, 248, 0.1);
+  color: #7dd3fc;
+
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+
+/* TABLE IMPROVEMENTS 🔥 */
+table tr:hover {
+  background: rgba(56, 189, 248, 0.08);
+}
+
+table td, table th {
+  transition: background 0.2s ease;
+}
+
+
+/* SCROLL OFFSET */
+section {
+  scroll-margin-top: 100px;
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}

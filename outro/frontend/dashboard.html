@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WQMS | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="scripts/dashboard.js" defer></script>
+  </head>
+  <body class="min-h-screen text-slate-100">
+    <header class="sticky top-0 z-50 border-b border-cyan-500/10 bg-slate-950/80 backdrop-blur-lg">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <a href="index.html" class="text-xl font-semibold tracking-tight text-cyan-300">WQMS</a>
+        <div class="hidden space-x-6 md:flex">
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="entry.html" class="nav-link">Data Entry</a>
+          <a href="samples.html" class="nav-link">Samples</a>
+        </div>
+        <a href="entry.html" class="glow-button rounded-full border border-cyan-400/20 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-100">Add Sample</a>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-6 pb-16 pt-12">
+      <div class="mb-10 space-y-3">
+        <p class="text-sm uppercase tracking-[0.35em] text-cyan-300">Dashboard</p>
+        <h1 class="text-4xl font-semibold text-white">Water Quality Metrics</h1>
+        <p class="max-w-2xl text-slate-400">Live chart analysis from the backend API and predictions powered by ML.</p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        <div class="glass-card rounded-3xl p-7">
+          <p class="text-sm text-slate-400">Total Samples</p>
+          <p id="stat-samples" class="mt-4 text-4xl font-semibold text-cyan-300">--</p>
+        </div>
+        <div class="glass-card rounded-3xl p-7">
+          <p class="text-sm text-slate-400">Safe Samples</p>
+          <p id="stat-safe" class="mt-4 text-4xl font-semibold text-emerald-300">--</p>
+        </div>
+        <div class="glass-card rounded-3xl p-7">
+          <p class="text-sm text-slate-400">Unsafe Samples</p>
+          <p id="stat-unsafe" class="mt-4 text-4xl font-semibold text-rose-400">--</p>
+        </div>
+      </div>
+
+      <section class="mt-10 grid gap-6 lg:grid-cols-2">
+        <div class="glass-card rounded-3xl p-7">
+          <div class="flex items-center justify-between">
+            <p class="text-xl font-semibold text-white">Water Quality Predictions</p>
+            <span class="rounded-full bg-cyan-500/10 px-3 py-1 text-sm text-cyan-200">Live API</span>
+          </div>
+          <canvas id="predictionChart" class="mt-8 h-72"></canvas>
+        </div>
+        <div class="glass-card rounded-3xl p-7">
+          <p class="text-xl font-semibold text-white">Parameter Averages</p>
+          <div class="mt-8 space-y-4 text-slate-300">
+            <p>pH average: <span id="avg-ph">--</span></p>
+            <p>Hardness average: <span id="avg-hardness">--</span></p>
+            <p>Conductivity average: <span id="avg-conductivity">--</span></p>
+            <p>Turbidity average: <span id="avg-turbidity">--</span></p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

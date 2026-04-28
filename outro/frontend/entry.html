@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WQMS | Data Entry</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css" />
+
+    <script src="scripts/entry.js" defer></script>
+  </head>
+
+  <body class="min-h-screen text-slate-100">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 border-b border-cyan-500/10 bg-slate-950/80 backdrop-blur-lg">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <a href="index.html" class="text-xl font-semibold text-cyan-300">WQMS</a>
+
+        <div class="hidden space-x-6 md:flex">
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="entry.html" class="nav-link">Data Entry</a>
+          <a href="samples.html" class="nav-link">Samples</a>
+        </div>
+
+        <a href="dashboard.html" class="glow-button px-5 py-2 text-sm">
+          View Data
+        </a>
+      </nav>
+    </header>
+
+    <!-- MAIN -->
+    <main class="mx-auto max-w-5xl px-6 pb-16 pt-12">
+
+      <div class="mb-8">
+        <p class="text-sm uppercase tracking-[0.35em] text-cyan-300">Data Entry</p>
+        <h1 class="text-4xl font-semibold text-white">Submit a New Water Sample</h1>
+
+        <p class="max-w-2xl text-slate-400">
+          Enter water quality parameters and get an instant safety prediction.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-3xl border border-cyan-500/10 p-8">
+
+        <form id="sampleForm" class="space-y-8">
+
+          <!-- ROW 1 -->
+          <div class="grid gap-6 sm:grid-cols-3">
+            <input type="number" step="0.1" name="ph" placeholder="pH" required class="input" />
+            <input type="number" step="0.1" name="hardness" placeholder="Hardness" required class="input" />
+            <input type="number" step="0.1" name="solids" placeholder="Solids" required class="input" />
+          </div>
+
+          <!-- ROW 2 -->
+          <div class="grid gap-6 sm:grid-cols-3">
+            <input type="number" step="0.1" name="chloramines" placeholder="Chloramines" class="input" />
+            <input type="number" step="0.1" name="sulfate" placeholder="Sulfate" class="input" />
+            <input type="number" step="0.1" name="conductivity" placeholder="Conductivity" class="input" />
+          </div>
+
+          <!-- ROW 3 -->
+          <div class="grid gap-6 sm:grid-cols-3">
+            <input type="number" step="0.1" name="organic_carbon" placeholder="Organic Carbon" class="input" />
+            <input type="number" step="0.1" name="trihalomethanes" placeholder="Trihalomethanes" class="input" />
+            <input type="number" step="0.1" name="turbidity" placeholder="Turbidity" required class="input" />
+          </div>
+
+          <!-- POTABILITY -->
+          <div class="flex justify-center">
+            <input type="number" name="potability" min="0" max="1" placeholder="Potability (optional)" class="input w-60" />
+          </div>
+
+          <!-- SUBMIT -->
+          <div class="flex justify-center pt-4">
+            <button id="submitBtn" type="submit" class="glow-button px-8 py-3 font-semibold">
+              Submit Sample
+            </button>
+          </div>
+
+        </form>
+
+        <!-- RESPONSE -->
+        <div id="responseMessage" class="mt-8 p-6 text-center hidden"></div>
+
+      </div>
+
+    </main>
+
+  </body>
+</html>
